@@ -1,46 +1,11 @@
-/* 🐔 CHICKEN ROAD MASTER DESIGN THEME */
+/* 🐔 CHICKEN ROAD MASTER DESIGN THEME & GLOBAL CSS UNLOCK */
 * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+body { background-color: #161616; color: white; display: flex; flex-direction: column; align-items: center; height: 100vh; height: 100dvh; overflow: hidden; font-family: 'Segoe UI', Arial, sans-serif; }
 
-body { 
-    background-color: #161616; 
-    color: white; 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    height: 100vh; 
-    height: 100dvh; 
-    overflow: hidden; 
-    font-family: 'Segoe UI', Arial, sans-serif;
-}
+#viewport { position: relative; width: 100%; max-width: 400px; flex-grow: 1; background: #181818; overflow: hidden; border-left: 1px solid #222; border-right: 1px solid #222; }
+#game-world { position: absolute; display: flex; top: 0; left: 0; height: 100%; transition: transform 0.12s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
 
-
-
-#viewport { 
-    position: relative; 
-    width: 100%; 
-    max-width: 400px; 
-    flex-grow: 1; 
-    background: #181818; 
-    overflow: hidden; 
-    border-left: 1px solid #222; 
-    border-right: 1px solid #222; 
-}
-
-#game-world { position: absolute; display: flex; top: 0; left: 0; height: 100%; }
-
-.column { 
-    width: 70px; 
-    height: 100%; 
-    border-right: 1px dashed #1e5631; 
-    position: relative; 
-    flex-shrink: 0; 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    justify-content: center; 
-    background-color: #0b3318; 
-}
-
+.column { width: 70px; height: 100%; border-right: 1px dashed #1e5631; position: relative; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #0b3318; }
 .first-col { background-color: #202020; border-right: 1px solid #333; }
 .manhole { width: 52px; height: 52px; border-radius: 50%; background: radial-gradient(circle, #2a2a2a 30%, #161616 100%); border: 2px solid #333; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: #888; }
 
@@ -49,18 +14,15 @@ body {
 #chicken-shadow { position: absolute; bottom: 2px; width: 30px; height: 8px; background: rgba(0,0,0,0.4); border-radius: 50%; z-index: 1; }
 
 #float-badge { position: absolute; top: -35px; background: #27ae60; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.3); z-index: 5; }
-.barrier { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: transparent; z-index: 50; }
-
+.barrier { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: transparent; z-index: 50; pointer-events: auto; }
 .ambient-car, .car { position: absolute; width: 45px; height: 85px; object-fit: contain; transform: rotate(180deg); z-index: 3; }
 
-#controls { width: 100%; max-width: 400px; background: #111; padding: 15px; border-top: 1px solid #222; display: flex; flex-direction: column; gap: 12px; z-index: 10; }
+#controls { width: 100%; max-width: 400px; background: #111; padding: 15px; border-top: 1px solid #222; display: flex; flex-direction: column; gap: 12px; z-index: 10; pointer-events: auto; }
 .diff-row, .input-group, .shortcuts, .actions { display: flex; gap: 8px; width: 100%; }
-
 .diff-btn, .ctrl-btn, .short-btn, .btn-go, .btn-cashout { border: none; font-weight: bold; cursor: pointer; transition: 0.1s; user-select: none; }
 
 .diff-btn { flex: 1; padding: 8px; background: #222; color: #aaa; border-radius: 6px; font-size: 12px; border: 1px solid #333; }
 .diff-btn.active { background: #e74c3c; color: white; border-color: #e74c3c; }
-
 .input-group { background: #1b1b1b; border-radius: 8px; padding: 4px; align-items: center; border: 1px solid #222; }
 .ctrl-btn { width: 40px; height: 40px; background: #2a2a2a; color: white; font-size: 20px; border-radius: 6px; }
 .bet-display { flex: 1; text-align: center; font-size: 16px; font-weight: bold; color: #fff; }
@@ -72,4 +34,5 @@ body {
 .btn-cashout { flex: 1; padding: 14px; background: #f1c40f; color: #111; font-size: 13px; border-radius: 8px; box-shadow: 0 4px #b7950b; text-align: center; line-height: 1.2; }
 .btn-cashout:active:not(.btn-disabled) { transform: translateY(3px); box-shadow: 0 1px #b7950b; }
 
-.btn-disabled { opacity: 0.4; pointer-events: none; box-shadow: none !important; transform: none !important; }
+/* 🎯 [মেগা সিএসএস আনলকার ভাই]: এখান থেকে pointer-events জ্যাম চিরতরে মুক্ত করে ওয়ান-ক্লিক লাইভ সিঙ্ক ফিক্স করা হলো ভাই */
+.btn-disabled { opacity: 0.4; box-shadow: none !important; transform: none !important; }
