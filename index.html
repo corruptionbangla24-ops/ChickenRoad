@@ -291,7 +291,7 @@
                     });
                                     
                      const data = await response.json();
-                    if (data && data.success) {
+                                        if (data && data.success) {
                         sounds.click.play();
                         isGameActive = true;
                         
@@ -299,7 +299,7 @@
                             balance = parseFloat(data.balance);
                         }
 
-                        // 🎰 [কালার ট্রেড ও এভিয়েটর ওরিজিনাল ইউনিভার্সাল ওয়ালেট সিগন্যাল ট্রিগার]
+                        // 🎰 [কালার ট্রেড ও এভিয়েটর ওরিজিনাল ইউনিভার্সাল ওয়ালেট সিগন্যাল ট্রিগার লক ভাই]
                         if (window.parent) {
                             window.parent.postMessage({ action: "refresh_wallet" }, "*");
                         }
@@ -307,18 +307,22 @@
                             window.top.postMessage({ action: "refresh_wallet" }, "*");
                         }
                         
-                        // 🚀 [মেগা ডাইরেক্ট ওভাররাইট বুস্টার]: এটি play.php-তে হাত না দিয়ে বাজি কাটার ১ মিলি-সেকেন্ডে ওপরের মেইন ওয়ালেট সরাসরি আপডেট করবে ভাই!
-                        if (window.parent && window.parent.document && data.balance !== undefined) {
-                            const parentWalletSelect = window.parent.document.getElementById("active_wallet");
-                            if (parentWalletSelect) {
-                                const mainOption = parentWalletSelect.querySelector("option[value='main']");
-                                if (mainOption) {
-                                    let formattedBal = parseFloat(data.balance).toLocaleString('en-IN', {minimumFractionDigits: 2});
-                                    mainOption.text = "Main: ৳" + formattedBal;
+                        // 🚀 [মেগা অল-রাউন্ডার লাইভ ফ্লাশার ইঞ্জিন ভাই]: এটি বাজি কাটার ১ মিলি-সেকেন্ডে ওপরের মেইন ওয়ালেট সরাসরি আপডেট করতে বাধ্য করবে ভাই!
+                        if (window.parent) {
+                            if (typeof window.parent.updateWallet === "function") {
+                                window.parent.updateWallet("main");
+                            }
+                            if (typeof window.parent.loadBalance === "function") {
+                                window.parent.loadBalance();
+                            }
+                            if (window.parent.document) {
+                                const parentSelectEl = window.parent.document.querySelector(".wallet-select");
+                                if (parentSelectEl) {
+                                    parentSelectEl.dispatchEvent(new Event('change'));
                                 }
                             }
                         }
-                                   
+
 
                     btnCash.classList.remove("btn-disabled");
 
