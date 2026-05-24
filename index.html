@@ -273,23 +273,34 @@
                             wallet: urlWallet
                         })
                     });
-                        const data = await response.json();
+                                    const data = await response.json();
                 if (data && data.success) {
                     sounds.click.play();
                     isGameActive = true;
                     
-                    // 🎰 [এভিয়েটর ওরিজিনাল ব্যালেন্স রেসপন্স সিঙ্ক ভাই]: ডাটাবেজ থেকে কাটা ব্যালেন্স গেমের মেমোরিতে লক হলো
                     if (data.balance !== undefined) {
                         balance = parseFloat(data.balance);
                     }
                     
-                    // 🎰 [এভিয়েটর ৫৪৬-৫৪৭ নম্বর লাইনের হুবহু ওরিজিনাল ওয়ালেট ফ্লাশার মেগা ট্রিগার লক]
                     if (window.parent) {
                         window.parent.postMessage({ action: "refresh_wallet" }, "*");
+                    }
+                    
+                    // 🎰 [আল্ট্রা-বুস্টেড ডাইরেক্ট ওয়ালেট ফ্লাশার] ঠিক এখানে এসে সুন্দর বসে লক হয়ে গেল ভাই!
+                    if (window.parent && window.parent.document) {
+                        const parentWalletSelect = window.parent.document.getElementById("active_wallet");
+                        if (parentWalletSelect && data.balance !== undefined) {
+                            const mainOption = parentWalletSelect.querySelector("option[value='main']");
+                            if (mainOption) {
+                                let formattedBal = parseFloat(data.balance).toLocaleString('en-IN', {minimumFractionDigits: 2});
+                                mainOption.text = "Main: ৳" + formattedBal;
+                            }
+                        }
                     }
 
                     btnCash.classList.remove("btn-disabled");
                     btnCash.disabled = false;
+    
                     btnGo.disabled = true;
                     btnGo.classList.add("btn-disabled");
                 } else {
