@@ -155,10 +155,15 @@
                     }
                 }
             } catch (e) {
-                console.error("Balance load error:", e);
+                console.error("Balance loading error:", e);
             }
         }
+
         window.onload = () => {
+            // 🎰 গেম লোড হওয়ার ১ মিলি-সেকেন্ডে মেইন হেডারের ওয়ালেটকে লাইভ রিফ্রেশ সিগন্যাল ফায়ার ভাই
+            if (window.parent) {
+                window.parent.postMessage({ action: "refresh_wallet" }, "*");
+            }
             loadLiveBalance();
             initWorld();
         };
