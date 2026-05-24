@@ -5,25 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Chicken Road - BETLOVER24</title>
     <style>
-        /* 🐔 CHICKEN ROAD MASTER DESIGN THEME */
+        /* 🐔 CHICKEN ROAD MASTER DESIGN THEME & GLOBAL CSS LOCK */
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
         body { background-color: #161616; color: white; display: flex; flex-direction: column; align-items: center; height: 100vh; height: 100dvh; overflow: hidden; font-family: 'Segoe UI', Arial, sans-serif; }
         
         #viewport { position: relative; width: 100%; max-width: 400px; flex-grow: 1; background: #181818; overflow: hidden; border-left: 1px solid #222; border-right: 1px solid #222; }
-        #game-world { position: absolute; display: flex; top: 0; left: 0; height: 100%; }
+        #game-world { position: absolute; display: flex; top: 0; left: 0; height: 100%; transition: transform 0.12s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        
         .column { width: 70px; height: 100%; border-right: 1px dashed #1e5631; position: relative; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #0b3318; }
         .first-col { background-color: #202020; border-right: 1px solid #333; }
         .manhole { width: 52px; height: 52px; border-radius: 50%; background: radial-gradient(circle, #2a2a2a 30%, #161616 100%); border: 2px solid #333; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: #888; }
         
+        /* 🎯 আইফ্রেম দেয়াল ভেদ করার জন্য চিকেন গ্রুপের সিএসএস অপটিমাইজেশন লক */
         #chicken-group { position: absolute; width: 70px; height: 60px; z-index: 10; display: flex; justify-content: center; align-items: center; pointer-events: none; }
         #chicken-img { width: 42px; height: 42px; object-fit: contain; z-index: 2; }
         #chicken-shadow { position: absolute; bottom: 2px; width: 30px; height: 8px; background: rgba(0,0,0,0.4); border-radius: 50%; z-index: 1; }
         
         #float-badge { position: absolute; top: -35px; background: #27ae60; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.3); z-index: 5; }
-        .barrier { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: transparent; z-index: 50; }
+        .barrier { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: transparent; z-index: 50; pointer-events: auto; }
         .ambient-car, .car { position: absolute; width: 45px; height: 85px; object-fit: contain; transform: rotate(180deg); z-index: 3; }
         
-        #controls { width: 100%; max-width: 400px; background: #111; padding: 15px; border-top: 1px solid #222; display: flex; flex-direction: column; gap: 12px; z-index: 10; }
+        /* 🎛️  কন্ট্রোল প্যানেল এরিয়া ও বাটন ডিজাইন সিএসএস */
+        #controls { width: 100%; max-width: 400px; background: #111; padding: 15px; border-top: 1px solid #222; display: flex; flex-direction: column; gap: 12px; z-index: 10; pointer-events: auto; }
         .diff-row, .input-group, .shortcuts, .actions { display: flex; gap: 8px; width: 100%; }
         .diff-btn, .ctrl-btn, .short-btn, .btn-go, .btn-cashout { border: none; font-weight: bold; cursor: pointer; transition: 0.1s; user-select: none; }
         
@@ -40,9 +43,15 @@
         .btn-cashout { flex: 1; padding: 14px; background: #f1c40f; color: #111; font-size: 13px; border-radius: 8px; box-shadow: 0 4px #b7950b; text-align: center; line-height: 1.2; }
         .btn-cashout:active:not(.btn-disabled) { transform: translateY(3px); box-shadow: 0 1px #b7950b; }
         .btn-disabled { opacity: 0.4; pointer-events: none; box-shadow: none !important; transform: none !important; }
+        
+        /* 🎯 [মেগা সিকিউরিটি আইডি]: এটি মেইন ওয়ালেট সিঙ্ক করার জন্য এইচটিএমএল হিডেন কন্টেইনার */
+        #balanceDisplay { display: none; }
     </style>
 </head>
 <body>
+
+    <!-- 🎯 জাভাস্ক্রিপ্ট জ্যাম কাটানোর জন্য মাস্টার ব্যালেন্স ট্যাগ লক ভাই -->
+    <div id="balanceDisplay">৳ 0.00</div>
 
     <!-- 🎮 গেম ভিউপোর্ট এরিয়া -->
     <div id="viewport">
@@ -83,6 +92,7 @@
             <button id="btn-go" class="btn-go" onclick="handleGo()">GO</button>
         </div>
     </div>
+
 
     <!-- 🔌 গ্লোবাল ক্লাউড সিঙ্ক জাভাস্ক্রিপ্ট মাস্টার ইঞ্জিন -->
     <script src="/socket.io/socket.io.js"></script>
