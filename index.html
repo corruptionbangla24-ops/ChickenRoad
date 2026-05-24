@@ -273,37 +273,39 @@
                             wallet: urlWallet
                         })
                     });
-                                    const data = await response.json();
+                        const data = await response.json();
                 if (data && data.success) {
                     sounds.click.play();
                     isGameActive = true;
                     
-                    // 🎰 [মেগা লাইভ ব্যালেন্স কাটার ইঞ্জিন ভাই]: বাজি ধরার সাথে সাথে মেইন হেডার ওয়ালেট লাইভ রিফ্রেশ করবে!
+                    // 🎰 [এভিয়েটর ওরিজিনাল ব্যালেন্স রেসপন্স সিঙ্ক ভাই]: ডাটাবেজ থেকে কাটা ব্যালেন্স গেমের মেমোরিতে লক হলো
+                    if (data.balance !== undefined) {
+                        balance = parseFloat(data.balance);
+                    }
+                    
+                    // 🎰 [এভিয়েটর ৫৪৬-৫৪৭ নম্বর লাইনের হুবহু ওরিজিনাল ওয়ালেট ফ্লাশার মেগা ট্রিগার লক]
                     if (window.parent) {
                         window.parent.postMessage({ action: "refresh_wallet" }, "*");
-                    }
-                    if (window.top) {
-                        window.top.postMessage({ action: "refresh_wallet" }, "*");
                     }
 
                     btnCash.classList.remove("btn-disabled");
                     btnCash.disabled = false;
                     btnGo.disabled = true;
                     btnGo.classList.add("btn-disabled");
-                
                 } else {
-                        alert(data.message || "❌ Balance deduction failed!");
-                        return;
-                    }
-                } catch (err) {
-                    console.error(err);
-                    alert("⚠️ কানেকশন এরর! আবার চেষ্টা করুন।");
+                    alert(data.message || "❌ Balance deduction failed!");
                     return;
                 }
+            } catch (err) {
+                console.error(err);
+                alert("⚠️ কানেকশন এরর! আবার চেষ্টা করুন।");
+                return;
             }
-
-            moveChicken();
         }
+
+        moveChicken();
+    }
+                            
 
         function moveChicken() {
             currentStep++;
