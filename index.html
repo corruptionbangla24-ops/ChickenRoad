@@ -255,9 +255,10 @@
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            userId: urlUserId,
+                            username: urlUserId, // এভিয়েটর প্রোটোকল মেনে 'username' কি-বোর্ড লক করা হলো ভাই
                             amount: parseFloat(currentBet),
-                            wallet: urlWallet
+                            wallet: urlWallet,
+                            game: "chicken_road"
                         })
                     });
                     
