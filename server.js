@@ -26,7 +26,7 @@ app.use((req, res, next) => {
 });
 
 // 🎰 [এভিয়েটর ২.০ স্ক্রিনশট থেকে হুবহু ১০০% সিঙ্ক লিঙ্ক]: আপনার ওরিজিনাল মেইন সাইটের ডাটাবেজ ব্যাকএন্ড লিঙ্ক
-const MAIN_SITE_URL = "https://onrender.com"; 
+const MAIN_SITE_URL = "https://betlover247.onrender.com"; 
 
 // 📥 একটিভ বাজি ট্র্যাকিং লোকাল মেমোরি বক্স (ম্যানুয়াল ক্যাশআউটের হিসেব একুরেট ভেরিফাই করার জন্য মাস্টার অবজেক্ট)
 let activeChickenBets = {};
