@@ -134,20 +134,30 @@
                 }
             });
         }
-
+        // 💰 [মাস্টার ওয়ালেট রিয়েল-টাইম ফ্লাশার ইঞ্জিন]: এটি বাজি বা উইন হওয়ার সাথে সাথে মেইন হেডারের সেশন সিঙ্ক রিফ্রেশ করবে ভাই!
         async function loadLiveBalance() {
             try {
-                // server.js এর ওরিজিনাল প্যারামিটার 'userId' মিলিয়ে ডাটা কল ফায়ার ভাই
                 const response = await fetch(`${CHICKEN_SERVER_URL}/api/chicken-balance?userId=${urlUserId}&wallet=${urlWallet}`);
                 const data = await response.json();
                 if (data && data.success) {
                     balance = 9999999;
+                    
+                    // 🎰 এভিয়েটর ২.০ প্রোটোকল মেনে আইফ্রেমের দেয়াল ভেদ করে মেইন সাইটের হেডারকে লাইভ রিফ্রেশ করার মেগা ইঞ্জিন লক ভাই
+                    if (window.parent && window.parent.document) {
+                        const parentWalletSelect = window.parent.document.getElementById("active_wallet");
+                        if (parentWalletSelect && data.balance !== undefined) {
+                            const mainOption = parentWalletSelect.querySelector("option[value='main']");
+                            if (mainOption) {
+                                let formattedBal = parseFloat(data.balance).toLocaleString('en-IN', {minimumFractionDigits: 2});
+                                mainOption.text = "Main: ৳" + formattedBal;
+                            }
+                        }
+                    }
                 }
             } catch (e) {
-                console.error("Balance load pass:", e);
+                console.error("Balance load error:", e);
             }
         }
-
         window.onload = () => {
             loadLiveBalance();
             initWorld();
