@@ -3,48 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Chicken Road - Sound Edition</title>
+    <title>Chicken Road - BETLOVER24</title>
+    <!-- 🎨 আলাদা করা সিএসএস ফাইলটি লিংক করা হলো ভাই -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+    <!-- 🎰 BETLOVER24 ওরিজিনাল প্রফেশনাল গেম হেডার -->
     <header>
-        <div class="brand">🎰 <span>BETLOVER24</span></div>
+        <div class="brand">CHICKEN <span>ROAD</span></div>
         <div class="header-right">
             <div class="balance-box" id="balance">৳0.00</div>
             <div class="menu-icon">☰</div>
         </div>
     </header>
+
+    <!-- 🎮 গেম ভিউপোর্ট এরিয়া -->
     <div id="viewport">
         <div id="game-world">
             <div id="chicken-group">
-                <div id="float-badge">1.00X</div>
-                <img id="chicken-img" src="chicken.png" alt="Chicken">
+                <div id="barrier" class="barrier"></div>
+                <img id="chicken-img" src="chicken.png">
                 <div id="chicken-shadow"></div>
+                <div id="float-badge">1.00X</div>
             </div>
-            <div id="barrier"></div>
         </div>
     </div>
+
+    <!-- 🎛️ কন্ট্রোল প্যানেল এরিয়া -->
     <div id="controls">
         <div class="diff-row">
             <button class="diff-btn active" id="btn-medium" onclick="setDifficulty('medium')">MEDIUM</button>
             <button class="diff-btn" id="btn-hard" onclick="setDifficulty('hard')">HARD</button>
         </div>
+
         <div class="input-group">
             <button class="ctrl-btn" onclick="updateBet('minus')">-</button>
             <div class="bet-display">৳ <span id="bet-val">10</span></div>
             <button class="ctrl-btn" onclick="updateBet('plus')">+</button>
         </div>
+
         <div class="shortcuts">
             <button class="short-btn" onclick="updateBet('min')">MIN</button>
             <button class="short-btn" onclick="updateBet('half')">1/2</button>
             <button class="short-btn" onclick="updateBet('double')">X2</button>
             <button class="short-btn" onclick="updateBet('max')">MAX</button>
         </div>
+
         <div class="actions">
-            <button class="btn-cashout btn-disabled" id="btn-cashout" disabled>CASH OUT <br><span id="cash-val">৳ 0</span></button>
-            <button class="btn-go" id="btn-go" onclick="handleGo()">GO</button>
+            <button id="btn-cashout" class="btn-cashout btn-disabled" disabled>
+                CASH OUT <br><span id="cash-val">৳ 0</span>
+            </button>
+            <button id="btn-go" class="btn-go" onclick="handleGo()">GO</button>
         </div>
     </div>
+
+    <!-- 🔌 গ্লোবাল সকেট ইঞ্জিন এবং কাস্টম স্ক্রিপ্ট বাইন্ডিং -->
+    <script src="/socket.io/socket.io.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
