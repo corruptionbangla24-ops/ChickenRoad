@@ -13,24 +13,7 @@ body {
     font-family: 'Segoe UI', Arial, sans-serif;
 }
 
-header { 
-    width: 100%; 
-    max-width: 400px; 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    padding: 15px 20px; 
-    background: #1b1b1b; 
-    border-bottom: 1px solid #222; 
-    z-index: 100; 
-    flex-shrink: 0; 
-}
 
-.brand { font-weight: 800; font-size: 16px; color: #fff; letter-spacing: 1px; }
-.brand span { color: #e74c3c; }
-.header-right { display: flex; align-items: center; gap: 15px; }
-.balance-box { background: #252525; padding: 6px 12px; border-radius: 5px; font-weight: bold; border: 1px solid #333; font-size: 13px; color: #2ecc71; }
-.menu-icon { font-size: 24px; color: #aaa; cursor: pointer; }
 
 #viewport { 
     position: relative; 
