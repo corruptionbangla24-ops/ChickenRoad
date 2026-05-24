@@ -18,12 +18,16 @@ const io = socketIo(server, {
 app.use(express.json());
 app.use(express.static(path.join(__dirname, './')));
 
-// 🔓 [আইফ্রেম রিফিউজড জ্যাম আনলকার]: মূল সাইটের ভেতর চিকেন রোড লাইভ প্রবেশ করার গ্লোবাল প্রোটোকল লক ভাই
+// 🔓 [আইফ্রেম সিকিউরিটি প্রোটেকশন বাইপাস ২.০ ভাই]: এটি আইফ্রেমের ভেতর থেকে postMessage সিগন্যাল সরাসরি মেইন সাইটের হেডারে পাঠাতে সাহায্য করবে
 app.use((req, res, next) => {
     res.setHeader("X-Frame-Options", "ALLOWALL");
-    res.setHeader("Content-Security-Policy", "frame-ancestors *");
+    res.setHeader("Content-Security-Policy", "frame-ancestors *; default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src * 'unsafe-inline'; img-src * data: blob:; style-src * 'unsafe-inline'; font-src * data:;");
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
     next();
 });
+
 
 // 🎰 [এভিয়েটর ২.০ স্ক্রিনশট থেকে হুবহু ১০০% সিঙ্ক লিঙ্ক]: আপনার ওরিজিনাল মেইন সাইটের ডাটাবেজ ব্যাকএন্ড লিঙ্ক
 const MAIN_SITE_URL = "https://betlover247.onrender.com"; 
