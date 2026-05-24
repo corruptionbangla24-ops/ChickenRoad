@@ -280,39 +280,48 @@
                         })
                     });
                                     
-                    const data = await response.json();
-                    if (data && data.success) {
-                        sounds.click.play();
-                        isGameActive = true;
-                        
-                        // 🎰 গেমের কোর মেমোরিতে নতুন ব্যালেন্স লক হলো ভাই
-                        if (data.balance !== undefined) {
-                            balance = parseFloat(data.balance);
-                        }
+                                    const data = await response.json();
+                if (data && data.success) {
+                    sounds.click.play();
+                    isGameActive = true;
+                    
+                    // 🎰 গেমের কোর মেমোরিতে নতুন ব্যালেন্স লক হলো ভাই
+                    if (data.balance !== undefined) {
+                        balance = parseFloat(data.balance);
+                    } else if (data.user_balance !== undefined) {
+                        balance = parseFloat(data.user_balance);
+                    }
 
-                        // 🎰 [কালার ট্রেড ও এভিয়েটর ওরিজিনাল ইউনিভার্সাল ওয়ালেট সিগন্যাল ট্রিগার]
-                        if (window.parent) {
-                            window.parent.postMessage({ action: "refresh_wallet" }, "*");
-                        }
-                        if (window.top) {
-                            window.top.postMessage({ action: "refresh_wallet" }, "*");
-                        }
-                        
-                        // 🚀 [মেগা ডাইরেক্ট ওভাররাইট বুস্টার]: এটি play.php-তে হাত না দিয়ে বাজি কাটার ১ মিলি-সেকেন্ডে ওপরের মেইন ওয়ালেট সরাসরি আপডেট করবে ভাই!
-                        if (window.parent && window.parent.document && data.balance !== undefined) {
-                            const parentWalletSelect = window.parent.document.getElementById("active_wallet");
-                            if (parentWalletSelect) {
-                                const mainOption = parentWalletSelect.querySelector("option[value='main']");
-                                if (mainOption) {
-                                    let formattedBal = parseFloat(data.balance).toLocaleString('en-IN', {minimumFractionDigits: 2});
-                                    mainOption.text = "Main: ৳" + formattedBal;
+                    // 🎰 [কালার ট্রেড ও এভিয়েটর ওরিজিনাল ইউনিভার্সাল ওয়ালেট সিগন্যাল ট্রিগার লক ভাই]
+                    if (window.parent) {
+                        window.parent.postMessage({ action: "refresh_wallet" }, "*");
+                    }
+                    if (window.top) {
+                        window.top.postMessage({ action: "refresh_wallet" }, "*");
+                    }
+                    
+                    // 🚀 [মেগা ডাইরেক্ট ওভাররাইট বুস্টার ইঞ্জিন]: এটি play.php-তে হাত না দিয়ে বাজি কাটার ১ মিলি-সেকেন্ডে ওপরের মেইন ওয়ালেট সরাসরি আপডেট করতে বাধ্য করবে ভাই!
+                    if (window.parent && window.parent.document) {
+                        const parentWalletSelect = window.parent.document.getElementById("active_wallet");
+                        if (parentWalletSelect) {
+                            const mainOption = parentWalletSelect.querySelector("option[value='main']");
+                            // নোড ব্যাকএন্ড থেকে আসা আসল ব্যালেন্স ডাটা ডিরেক্ট ওয়ালেটে ফ্লাশ ভাই
+                            let currentDbBal = data.balance || data.user_balance || balance;
+                            if (mainOption && currentDbBal !== 9999999) {
+                                let formattedBal = parseFloat(currentDbBal).toLocaleString('en-IN', {minimumFractionDigits: 2});
+                                mainOption.text = "Main: ৳" + formattedBal;
+                                
+                                // যদি মেইন সাইটের কোনো কাস্টম সিএসএস লেবেল থাকে তাকেও তাজা ফায়ার ভাই
+                                const parentSelectEl = window.parent.document.querySelector(".wallet-select");
+                                if (parentSelectEl) {
+                                    parentSelectEl.dispatchEvent(new Event('change'));
                                 }
                             }
                         }
                     }
 
-
                     btnCash.classList.remove("btn-disabled");
+
                     btnCash.disabled = false;
     
                     btnGo.disabled = true;
