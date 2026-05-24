@@ -414,12 +414,19 @@
                     })
                 });
 
-                const data = await response.json();
-                if (data && data.success) {
-                    alert(`🎯 Cashout Success! You Won ৳${totalWinAmount}`);
-                    isGameActive = false;
-                    resetGame();
+                         const data = await response.json();
+            if (data && data.success) {
+                alert(`🎯 Cashout Success! You Won ৳${totalWinAmount}`);
+                isGameActive = false;
+
+                // 🎰 [এভিয়েটর ওরিজিনাল ক্যাশআউট ফ্লাশার]: উইন হওয়ার সাথে সাথে মেইন হেডার ওয়ালেট লাইভ রিফ্রেশ করবে ভাই!
+                if (window.parent) {
+                    window.parent.postMessage({ action: "refresh_wallet" }, "*");
                 }
+
+                resetGame();
+            }
+   
             } catch (err) {
                 console.error(err);
                 alert("⚠️ ক্যাশআউট এরর!");
