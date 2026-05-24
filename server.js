@@ -49,7 +49,7 @@ app.get('/api/chicken-balance', async (req, res) => {
     }
 });
 
-// 🛫 ১. ব্যালেন্স কাটার মেগা এপিআই রাউট (হুবহু এভিয়েটরের ওরিজিনাল অবজেক্ট স্ট্রাকচার সিঙ্ক ভাই)
+// 🛫 ১. ব্যালেন্স কাটার মেগা এপিআই রাউট (হুবহু ওরিজিনাল এভিয়েটর ২.০ এর কড়া ডোমেন হ্যান্ডশেক ও রেসপন্স সিঙ্ক ভাই)
 app.post('/api/chicken-bet', async (req, res) => {
     const { userId, amount, wallet } = req.body;
     try {
@@ -61,26 +61,24 @@ app.post('/api/chicken-bet', async (req, res) => {
             wallet: wallet
         }, { timeout: 15000 });
 
-                if (response.data && response.data.status === "ok") {
+        // কড়া ডাটাবেজ রেসপন্স চেক লক
+        if (response.data && response.data.status === "ok") {
             activeChickenBets[userId] = { amount: parseFloat(amount), wallet: wallet };
             
-            // 🎯 [এভিয়েটর ওরিজিনাল সকেট ফ্লাশার ইঞ্জিন ভাই]: এটি বাজি ধরার ১ মিলি-সেকেন্ডে মেইন হেডারের ওয়ালেট কাঁপিয়ে দেবে!
-            io.emit("balanceUpdate", { username: userId, balance: response.data.balance });
-            
-            return res.json({ 
+            // 🎯 [এভিয়েটর স্ক্রিনশটের হুবহু ১৪৮ নম্বর লাইনের বিশুদ্ধ রেসপন্স প্রোটোকল লক ভাই]
+            res.json({ 
                 success: true, 
                 balance: response.data.balance, 
                 betAmt: parseFloat(amount) 
             });
-
         } else { 
-            return res.json({ success: false, message: response.data.message || "❌ Balance deduction failed!" }); 
+            res.json({ success: false, message: response.data.message || "❌ Declined!" }); 
         }
     } catch (e) { 
-        console.error("Chicken Bet Core Database Error:", e.message);
-        return res.json({ success: false, message: "⚠️ Connection Timeout! Try again." }); 
+        res.json({ success: false, message: "Timeout!" }); 
     }
 });
+
 
 // 🛫 ২. ম্যানুয়াল ক্যাশআউট উইনিং ব্যালেন্স এপিআই রাউট (হুবহু এভিয়েটরের স্ক্রিনশটের মেগা উইন ও লগ প্যারামিটার সিঙ্ক ভাই)
 app.post('/api/chicken-win', async (req, res) => {
