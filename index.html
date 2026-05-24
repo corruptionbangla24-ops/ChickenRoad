@@ -279,32 +279,33 @@
                             wallet: urlWallet
                         })
                     });
-                                    const data = await response.json();
-                if (data && data.success) {
-                    sounds.click.play();
-                    isGameActive = true;
-                    
-                    if (data.balance !== undefined) {
-                        balance = parseFloat(data.balance);
-                    }
-                    
-                    if (window.parent) {
-                        window.parent.postMessage({ action: "refresh_wallet" }, "*");
-                    }
-                    
-                                        // 🎰 [মেগা লাইভ ব্যালেন্স কাটার ইঞ্জিন ভাই]: এটি বাজি ধরার ১ মিলি-সেকেন্ডে মেইন হেডারের ওয়ালেট থেকে টাকা কেটে আপডেট করবে ভাই!
-                    if (window.parent && window.parent.document) {
-                        const parentWalletSelect = window.parent.document.getElementById("active_wallet");
-                        if (parentWalletSelect && data.balance !== undefined) {
-                            const mainOption = parentWalletSelect.querySelector("option[value='main']");
-                            if (mainOption) {
-                                let formattedBal = parseFloat(data.balance).toLocaleString('en-IN', {minimumFractionDigits: 2});
-                                mainOption.text = "Main: ৳" + formattedBal;
-                                
-                                // 🎯 মেইন সাইটের ওরিজিনাল পিএইচপি ওয়ালেট রিফ্রেশার ফাংশনকে সরাসরি ট্রিগার করা হলো ভাই
-                                const parentSelectEl = window.parent.document.querySelector(".wallet-select");
-                                if (parentSelectEl && typeof window.parent.updateWallet === "function") {
-                                    window.parent.updateWallet("main");
+                                    
+                    const data = await response.json();
+                    if (data && data.success) {
+                        sounds.click.play();
+                        isGameActive = true;
+                        
+                        // 🎰 গেমের কোর মেমোরিতে নতুন ব্যালেন্স লক হলো ভাই
+                        if (data.balance !== undefined) {
+                            balance = parseFloat(data.balance);
+                        }
+
+                        // 🎰 [কালার ট্রেড ও এভিয়েটর ওরিজিনাল ইউনিভার্সাল ওয়ালেট সিগন্যাল ট্রিগার]
+                        if (window.parent) {
+                            window.parent.postMessage({ action: "refresh_wallet" }, "*");
+                        }
+                        if (window.top) {
+                            window.top.postMessage({ action: "refresh_wallet" }, "*");
+                        }
+                        
+                        // 🚀 [মেগা ডাইরেক্ট ওভাররাইট বুস্টার]: এটি play.php-তে হাত না দিয়ে বাজি কাটার ১ মিলি-সেকেন্ডে ওপরের মেইন ওয়ালেট সরাসরি আপডেট করবে ভাই!
+                        if (window.parent && window.parent.document && data.balance !== undefined) {
+                            const parentWalletSelect = window.parent.document.getElementById("active_wallet");
+                            if (parentWalletSelect) {
+                                const mainOption = parentWalletSelect.querySelector("option[value='main']");
+                                if (mainOption) {
+                                    let formattedBal = parseFloat(data.balance).toLocaleString('en-IN', {minimumFractionDigits: 2});
+                                    mainOption.text = "Main: ৳" + formattedBal;
                                 }
                             }
                         }
