@@ -17,6 +17,12 @@ const io = socketIo(server, {
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, './')));
+// 🔓 [আইফ্রেম রিফিউজড জ্যাম আনলকার]: মূল সাইটের ভেতর চিকেন রোড লাইভ প্রবেশ করার গ্লোবাল প্রোটোকল লক ভাই
+app.use((req, res, next) => {
+    res.setHeader("X-Frame-Options", "ALLOWALL");
+    res.setHeader("Content-Security-Policy", "frame-ancestors *");
+    next();
+});
 
 // 🎰 আপনার ওরিজিনাল মেইন সাইটের ডাটাবেজ ব্যাকএন্ড লিঙ্ক
 const MAIN_SITE_URL = "https://betlover247.onrender.com"; 
