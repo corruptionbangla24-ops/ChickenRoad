@@ -286,7 +286,7 @@
                         window.parent.postMessage({ action: "refresh_wallet" }, "*");
                     }
                     
-                    // 🎰 [আল্ট্রা-বুস্টেড ডাইরেক্ট ওয়ালেট ফ্লাশার] ঠিক এখানে এসে সুন্দর বসে লক হয়ে গেল ভাই!
+                                        // 🎰 [মেগা লাইভ ব্যালেন্স কাটার ইঞ্জিন ভাই]: এটি বাজি ধরার ১ মিলি-সেকেন্ডে মেইন হেডারের ওয়ালেট থেকে টাকা কেটে আপডেট করবে ভাই!
                     if (window.parent && window.parent.document) {
                         const parentWalletSelect = window.parent.document.getElementById("active_wallet");
                         if (parentWalletSelect && data.balance !== undefined) {
@@ -294,9 +294,16 @@
                             if (mainOption) {
                                 let formattedBal = parseFloat(data.balance).toLocaleString('en-IN', {minimumFractionDigits: 2});
                                 mainOption.text = "Main: ৳" + formattedBal;
+                                
+                                // 🎯 মেইন সাইটের ওরিজিনাল পিএইচপি ওয়ালেট রিফ্রেশার ফাংশনকে সরাসরি ট্রিগার করা হলো ভাই
+                                const parentSelectEl = window.parent.document.querySelector(".wallet-select");
+                                if (parentSelectEl && typeof window.parent.updateWallet === "function") {
+                                    window.parent.updateWallet("main");
+                                }
                             }
                         }
                     }
+
 
                     btnCash.classList.remove("btn-disabled");
                     btnCash.disabled = false;
