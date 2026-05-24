@@ -84,14 +84,14 @@
         </div>
     </div>
 
-    <!-- 🔌 গ্লোবাল ক্লাউড সিঙ্ক জাভাস্ক্রিপ্ট ইঞ্জিন লকিং -->
+       <!-- 🔌 গ্লোবাল ক্লাউড সিঙ্ক জাভাস্ক্রিপ্ট ইঞ্জিন লকিং ২.০ -->
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const urlUserId = urlParams.get('userId') || urlParams.get('id') || urlParams.get('username') || "guest_user";
         const urlWallet = urlParams.get('wallet') || "main";
         
-        // 🎯 আপনার ওরিজিনাল সাকসেসফুল লাইভ রেন্ডার লিঙ্ক ইঞ্জিন লক করা হলো ভাই
+        // রেন্ডার ক্লাউডের ওরিজিনাল লোকাল হোস্ট রুট ডোমেন ডাইনামিক ক্যাচিং
         const CHICKEN_SERVER_URL = window.location.origin;
 
         let balance = 0; 
@@ -185,7 +185,7 @@
             initWorld();
         }
 
-                function initWorld() {
+        function initWorld() {
             const existingCols = document.querySelectorAll('.column');
             existingCols.forEach(col => col.remove());
 
@@ -228,6 +228,7 @@
             betValDisplay.innerText = currentBet;
         }
 
+        // 🚀 [বাজি ধরার মেইন এপিআই ইঞ্জিন]: এটি সরাসরি রেন্ডার নোড ব্যাকএন্ডে নিখুঁত হিট করবে ভাই
         async function handleGo() {
             if (isGameOver) { resetGame(); return; }
 
@@ -338,7 +339,7 @@
             }, 20);
         }
 
-        function updateWin() {
+                function updateWin() {
             let rate = difficulty === 'hard' ? 0.18 : 0.12;
             currentMultiplier = (1 + (currentStep * rate)).toFixed(2);
             badge.innerText = currentMultiplier + "X";
@@ -375,6 +376,7 @@
             }, 20);
         }
 
+        // 💰 [অটো-ক্যাশআউট পেমেন্ট ইঞ্জিন]: বাজি জিতলে ওরিজিনাল এভিয়েটর অবজেক্ট ডেটা সরাসরি ব্যাকএন্ডে সিঙ্ক হবে ভাই
         async function cashOut() {
             if (!isGameActive || isGameOver) return;
             sounds.win.play();
@@ -383,6 +385,7 @@
             const totalWinAmount = parseFloat((currentBet * currentMultiplier).toFixed(2));
 
             try {
+                // এক্সপ্রেস সার্ভারের 'chicken-win' রাউটে এভিয়েটরের ওরিজিনাল মাল্টিপ্লায়ার প্রোটোকল ডাটা পাঠানো হচ্ছে ভাই
                 const response = await fetch(`${CHICKEN_SERVER_URL}/api/chicken-win`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -390,6 +393,7 @@
                         userId: urlUserId,
                         amount: totalWinAmount,
                         bet_amount: parseFloat(currentBet),
+                        multiplier: parseFloat(currentMultiplier),
                         wallet: urlWallet
                     })
                 });
@@ -451,3 +455,5 @@
 </body>
 </html>
 
+                
+             
