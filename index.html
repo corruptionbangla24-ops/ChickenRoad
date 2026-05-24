@@ -124,24 +124,12 @@
         const cashVal = document.getElementById("cash-val");
         const betValDisplay = document.getElementById("bet-val");
 
-        // সকেট ব্যালেন্স আপডেট লিসেনার লক
+                // 🎯 [উইনগো কালার ট্রেড সিঙ্ক - মেগা লাইভ ব্যালেন্স ফ্লাশার ইঞ্জিন ভাই]
         if (typeof io !== 'undefined') {
             const socket = io();
             socket.on("balanceUpdate", (data) => {
                 if (data && data.username === urlUserId) {
-                    // ব্যালেন্স লোকাল ভেরিয়েবল সবসময় এপিআই কাটিং সেফ মোডে থাকবে ভাই
-                    balance = 9999999; 
-                }
-            });
-        }
-                async function loadLiveBalance() {
-            try {
-                const response = await fetch(`${CHICKEN_SERVER_URL}/api/chicken-balance?userId=${urlUserId}&wallet=${urlWallet}`);
-                const data = await response.json();
-                if (data && data.success) {
                     balance = 9999999;
-                    
-                    // 🎰 [মেগা লাইভ ব্যালেন্স রিফ্রেশার]: বাজি ধরা বা উইন হওয়ার ১ মিলি-সেকেন্ডে মেইন হেডারের ওয়ালেট টেক্সট বদলে দেবে ভাই!
                     if (window.parent && window.parent.document && data.balance !== undefined) {
                         const parentWalletSelect = window.parent.document.getElementById("active_wallet");
                         if (parentWalletSelect) {
@@ -152,21 +140,31 @@
                             }
                         }
                     }
+                    loadLiveBalance();
+                }
+            });
+        }
+
+        async function loadLiveBalance() {
+            try {
+                const response = await fetch(`${CHICKEN_SERVER_URL}/api/chicken-balance?userId=${urlUserId}&wallet=${urlWallet}`);
+                const data = await response.json();
+                if (data && data.success) {
+                    balance = 9999999;
                 }
             } catch (e) {
                 console.error("Balance loading error:", e);
             }
         }
-        
 
         window.onload = () => {
-            // 🎰 গেম লোড হওয়ার সময়ও এভিয়েটর প্রোটোকল সচল লক ভাই
             if (window.parent) {
                 window.parent.postMessage({ action: "refresh_wallet" }, "*");
             }
             loadLiveBalance();
             initWorld();
         };
+
 
 
         setInterval(() => {
