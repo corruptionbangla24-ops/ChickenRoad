@@ -61,13 +61,18 @@ app.post('/api/chicken-bet', async (req, res) => {
             wallet: wallet
         }, { timeout: 15000 });
 
-        // কড়া ডাটাবেজ রেসপন্স চেক লক
-        if (response.data && response.data.status === "ok") {
-            // ম্যানুয়াল ক্যাশআউটের ভেরিফিকেশনের জন্য বাজিটি লোকাল মেমরিতে লক করা হলো ভাই
+                if (response.data && response.data.status === "ok") {
             activeChickenBets[userId] = { amount: parseFloat(amount), wallet: wallet };
             
+            // 🎯 [এভিয়েটর ওরিজিনাল সকেট ফ্লাশার ইঞ্জিন ভাই]: এটি বাজি ধরার ১ মিলি-সেকেন্ডে মেইন হেডারের ওয়ালেট কাঁপিয়ে দেবে!
             io.emit("balanceUpdate", { username: userId, balance: response.data.balance });
-            return res.json({ success: true, balance: response.data.balance });
+            
+            return res.json({ 
+                success: true, 
+                balance: response.data.balance, 
+                betAmt: parseFloat(amount) 
+            });
+
         } else { 
             return res.json({ success: false, message: response.data.message || "❌ Balance deduction failed!" }); 
         }
