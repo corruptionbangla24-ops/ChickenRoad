@@ -10,8 +10,23 @@ body { background-color: #161616; color: white; display: flex; flex-direction: c
 .manhole { width: 52px; height: 52px; border-radius: 50%; background: radial-gradient(circle, #2a2a2a 30%, #161616 100%); border: 2px solid #333; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: #888; }
 
 #chicken-group { position: absolute; width: 70px; height: 60px; z-index: 10; display: flex; justify-content: center; align-items: center; pointer-events: none; }
-#chicken-img { width: 42px; height: 42px; object-fit: contain; z-index: 2; }
-#chicken-shadow { position: absolute; bottom: 2px; width: 30px; height: 8px; background: rgba(0,0,0,0.4); border-radius: 50%; z-index: 1; }
+/* 🚀 [চিকেন সাইজ বুস্টার লক ভাই]: ৪২ পিক্সেল থেকে বাড়িয়ে ৬০ পিক্সেল করায় মুরগিটি চমৎকার বড় দেখাবে ভাই! */
+#chicken-img { 
+    width: 60px; 
+    height: 60px; 
+    object-fit: contain; 
+    z-index: 2; 
+}
+
+#chicken-shadow { 
+    position: absolute; 
+    bottom: 2px; 
+    width: 45px; /* ছায়ার সাইজ ৩০ থেকে বাড়িয়ে ৪৫ করা হলো ভাই */
+    height: 8px; 
+    background: rgba(0,0,0,0.4); 
+    border-radius: 50%; 
+    z-index: 1; 
+}
 
 #float-badge { position: absolute; top: -35px; background: #27ae60; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.3); z-index: 5; }
 .barrier { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: transparent; z-index: 50; pointer-events: auto; }
