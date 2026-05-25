@@ -57,10 +57,9 @@
         const urlParams = new URLSearchParams(window.location.search);
         const urlUserId = urlParams.get('userId') || urlParams.get('id') || urlParams.get('username') || "guest_user";
         const urlWallet = urlParams.get('wallet') || "main";
-        
-        
-        // 🎯 [গ্লোবাল অনলাইন কোর রুট লক ভাই]: এটি কানেকশন এরর ১ সেকেন্ডে চিরতরে ধুয়ে মুছে সাফ করবে ভাই!
-        const CHICKEN_SERVER_URL = window.location.origin;
+                // 🎯 [নতুন রেন্ডার অনলাইন কোর রুট লক ভাই]: এটি প্রথম ক্লিকে কানেকশন এরর এবং ক্যাশআউট জ্যাম চিরতরে শেষ করবে ভাই!
+        const CHICKEN_SERVER_URL = "https://chickenroad.onrender.com";
+
 
         let balance = 9999999; 
         let currentBet = 10;
