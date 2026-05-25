@@ -53,13 +53,15 @@
 
     <!-- 🔌 গ্লোবাল ক্লাউড সিঙ্ক জাভাস্ক্রিপ্ট মাস্টার ইঞ্জিন -->
     <script src="/socket.io/socket.io.js"></script>
-    <script>
+
+           <script>
+        // 🎰 [উইনগো কালার ট্রেড ১৯২-১৯৪ নম্বর লাইনের হুবহু ওরিজিনাল প্যারামিটার সিঙ্ক ভাই]
         const urlParams = new URLSearchParams(window.location.search);
         const urlUserId = urlParams.get('userId') || urlParams.get('id') || urlParams.get('username') || "guest_user";
         const urlWallet = urlParams.get('wallet') || "main";
-                // 🎯 [নতুন রেন্ডার অনলাইন কোর রুট লক ভাই]: এটি প্রথম ক্লিকে কানেকশন এরর এবং ক্যাশআউট জ্যাম চিরতরে শেষ করবে ভাই!
-        const CHICKEN_SERVER_URL = "https://chickenroad.onrender.com";
-
+        
+        // 🎯 [অনলাইন ইন্টারনেট লাইভ লিঙ্ক ও পোর্ট ১০০০০ কড়া বাইন্ডিং লক ভাই]
+        const CHICKEN_SERVER_URL = window.location.origin;
 
         let balance = 9999999; 
         let currentBet = 10;
@@ -91,21 +93,15 @@
         const cashVal = document.getElementById("cash-val");
         const betValDisplay = document.getElementById("bet-val");
 
-        // 🎯 [উইনগো কালার ট্রেড সিঙ্ক - মেগা লাইভ ব্যালেন্স ফ্লাশার ইঞ্জিন ভাই]
+        // 🎯 [উইনগো কালার ট্রেড ১৫৮ নম্বর লাইনের ওরিজিনাল লাইভ সকেট লিসেনার ইঞ্জিন ভাই]
         if (typeof io !== 'undefined') {
             const socket = io();
             socket.on("balanceUpdate", (data) => {
                 if (data && data.username === urlUserId) {
                     balance = 9999999;
-                    if (window.parent && window.parent.document && data.balance !== undefined) {
-                        const parentWalletSelect = window.parent.document.getElementById("active_wallet");
-                        if (parentWalletSelect) {
-                            const mainOption = parentWalletSelect.querySelector("option[value='main']");
-                            if (mainOption) {
-                                let formattedBal = parseFloat(data.balance).toLocaleString('en-IN', {minimumFractionDigits: 2});
-                                mainOption.text = "Main: ৳" + formattedBal;
-                            }
-                        }
+                    // কালার ট্রেড প্রোটোকল মেনে আইফ্রেম মেসেজ সরাসরি মেইন সাইটে ফায়ার হবে ভাই
+                    if (window.parent) {
+                        window.parent.postMessage({ action: "refresh_wallet" }, "*");
                     }
                     loadLiveBalance();
                 }
@@ -219,7 +215,8 @@
             betValDisplay.innerText = currentBet;
         }
 
-                async function handleGo() {
+        // 🛫 [বাজি ধরার কোর মেম্বার ফাংশন - হুবহু কালার ট্রেড ৩১১ নম্বর লাইনের জিরো-এরর রেসপন্স সিঙ্ক ভাই]
+        async function handleGo() {
             if (isGameOver) { resetGame(); return; }
 
             if (isWaiting) {
@@ -246,7 +243,9 @@
                     });
                     
                     const data = await response.json();
-                    if (data && data.success) {
+                    
+                    // 🎰 [উইনগো কালার ট্রেড ৩১১-৩১২ নম্বর লাইনের বিশুদ্ধ সাকসেস ট্র্যাকিং লক ভাই]
+                    if (data.success) {
                         sounds.click.play();
                         isGameActive = true;
                         
@@ -254,24 +253,12 @@
                             balance = parseFloat(data.balance);
                         }
 
-                        // 🎰 [কালার ট্রেড ও এভিয়েটর ওরিজিনাল ইউনিভার্সাল ওয়ালেট সিগন্যাল ট্রিগার লক ভাই]
+                        // 🎰 [উইনগো কালার ট্রেড ৩১৪ নম্বর লাইনের ইউনিভার্সাল ওয়ালেট রিফ্রেশার সিগন্যাল ট্রিগার]
                         if (window.parent) {
                             window.parent.postMessage({ action: "refresh_wallet" }, "*");
                         }
                         if (window.top) {
                             window.top.postMessage({ action: "refresh_wallet" }, "*");
-                        }
-                        
-                        // 🚀 [মেগা ডাইরেক্ট ওয়ালেট ওভাররাইট ইঞ্জিন ভাই]: এটি play.php-তে হাত না দিয়ে বাজি কাটার ১ মিলি-সেকেন্ডে ওপরের মেইন ওয়ালেট সরাসরি আপডেট করতে বাধ্য করবে!
-                        if (window.parent && window.parent.document && data.balance !== undefined) {
-                            const parentWalletSelect = window.parent.document.getElementById("active_wallet");
-                            if (parentWalletSelect) {
-                                const mainOption = parentWalletSelect.querySelector("option[value='main']");
-                                if (mainOption) {
-                                    let formattedBal = parseFloat(data.balance).toLocaleString('en-IN', {minimumFractionDigits: 2});
-                                    mainOption.text = "Main: ৳" + formattedBal;
-                                }
-                            }
                         }
 
                         btnCash.classList.remove("btn-disabled");
@@ -279,11 +266,11 @@
                         btnGo.disabled = true;
                         btnGo.classList.add("btn-disabled");
                     } else {
-                        alert(data.message || "❌ Balance deduction failed!");
+                        alert(data.message || "❌ Bet Declined!");
                         return;
                     }
                 } catch (err) {
-                    console.error(err);
+                    console.error("Wingo Chicken Bet Connection Error:", err);
                     alert("⚠️ কানেকশন এরর! আবার চেষ্টা করুন।");
                     return;
                 }
@@ -308,7 +295,7 @@
             }, 300);
         }
 
-        function spawnCar(step, isSafe) {
+                function spawnCar(step, isSafe) {
             const cols = document.querySelectorAll('.column');
             const targetCol = cols[step];
             if (!targetCol) return;
@@ -404,7 +391,9 @@
                 });
 
                 const data = await response.json();
-                if (data && data.success) {
+                
+                // 🎰 [উইনগো কালার ট্রেড সিঙ্ক - ওরিজিনাল ক্যাশআউট সাকসেস হ্যান্ডশেক লক ভাই]
+                if (data.success) {
                     alert(`🎯 Cashout Success! You Won ৳${totalWinAmount}`);
                     isGameActive = false;
                     
@@ -418,7 +407,7 @@
                     resetGame();
                 }
             } catch (err) {
-                console.error(err);
+                console.error("Wingo Chicken Cashout Error:", err);
                 alert("⚠️ ক্যাশআউট এরর!");
             }
         }
@@ -467,4 +456,7 @@
     </script>
 </body>
 </html>
+
+ 
+                        
 
