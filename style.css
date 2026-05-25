@@ -9,15 +9,14 @@ body { background-color: #161616; color: white; display: flex; flex-direction: c
 .first-col { background-color: #202020; border-right: 1px solid #333; }
 .manhole { width: 52px; height: 52px; border-radius: 50%; background: radial-gradient(circle, #2a2a2a 30%, #161616 100%); border: 2px solid #333; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: #888; }
 
+/* 🚀 [চিকেন সাইজ ও ব্রিডিং মোশন ইঞ্জিন]: ৬০ পিক্সেল সাইজে মুরগিটি অনবরত জীবন্ত নিশ্বাস ফুলবে ভাই! */
 #chicken-group { position: absolute; width: 70px; height: 60px; z-index: 10; display: flex; justify-content: center; align-items: center; pointer-events: none; }
-/* 🚀 [চিকেন সাইজ বুস্টার লক ভাই]: ৪২ পিক্সেল থেকে বাড়িয়ে ৬০ পিক্সেল করায় মুরগিটি চমৎকার বড় দেখাবে ভাই! */
-/* 🐔 [জীবন্ত চিকেন মোশন ইঞ্জিন ভাই]: এটি মুরগিটিকে স্ক্রিনে অনবরত নিশ্বাস নেওয়ার মতো জীবন্ত দুলিয়ে রাখবে */
 #chicken-img { 
     width: 60px; 
     height: 60px; 
     object-fit: contain; 
     z-index: 2; 
-    animation: breathingChicken 1.2s ease-in-out infinite; /* জীবন্ত অ্যানিমেশন লক ভাই */
+    animation: breathingChicken 1.2s ease-in-out infinite; 
     transform-origin: bottom center;
 }
 
@@ -29,26 +28,13 @@ body { background-color: #161616; color: white; display: flex; flex-direction: c
     background: rgba(0,0,0,0.4); 
     border-radius: 50%; 
     z-index: 1; 
-    animation: shadowPulse 1.2s ease-in-out infinite; /* ছায়ার পালস অ্যানিমেশন লক ভাই */
+    animation: shadowPulse 1.2s ease-in-out infinite;
 }
-
-/* 🎯 মুরগির শরীর ফুলানো ও নিশ্বাস নেওয়ার ওরিজিনাল ক্যাসিনো থিম কিফ্রেম */
-@keyframes breathingChicken {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.06, 0.94); } /* মুরগি একটু নিচু হয়ে নিশ্বাস ফুলবে ভাই */
-    100% { transform: scale(1); }
-}
-
-@keyframes shadowPulse {
-    0% { transform: scale(1); opacity: 0.4; }
-    50% { transform: scale(1.15); opacity: 0.6; } /* মুরগি ফুললে ছায়াও একটু বড় হবে ভাই */
-    100% { transform: scale(1); opacity: 0.4; }
-}
-
 
 #float-badge { position: absolute; top: -35px; background: #27ae60; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.3); z-index: 5; }
 .barrier { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: transparent; z-index: 50; pointer-events: auto; }
-/* 🚀 [ট্রাফিক কার সাইজ বুস্টার লক ভাই]: ৪৫x৮৫ থেকে বাড়িয়ে ৫৬x১০৫ পিক্সেল করায় গাড়িগুলো চমৎকার বড় ও রিয়ালিস্টিক দেখাবে ভাই! */
+
+/* 🚀 [ট্রাফিক কার সাইজ বুস্টার]: গাড়িগুলো চমৎকার চওড়া ও রাজকীয় বড় সাইজে (৫৬x১০৫) দৌড়াবে ভাই! */
 .ambient-car, .car { 
     position: absolute; 
     width: 56px; 
@@ -74,6 +60,19 @@ body { background-color: #161616; color: white; display: flex; flex-direction: c
 
 .btn-cashout { flex: 1; padding: 14px; background: #f1c40f; color: #111; font-size: 13px; border-radius: 8px; box-shadow: 0 4px #b7950b; text-align: center; line-height: 1.2; }
 .btn-cashout:active:not(.btn-disabled) { transform: translateY(3px); box-shadow: 0 1px #b7950b; }
+
+/* 🎯 [মুরগির শরীর ফুলানো ও নিশ্বাস নেওয়ার ওরিজিনাল ক্যাসিনো থিম কিফ্রেম] */
+@keyframes breathingChicken {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.06, 0.94); }
+    100% { transform: scale(1); }
+}
+
+@keyframes shadowPulse {
+    0% { transform: scale(1); opacity: 0.4; }
+    50% { transform: scale(1.15); opacity: 0.6; }
+    100% { transform: scale(1); opacity: 0.4; }
+}
 
 /* 🎯 [মেগা সিএসএস আনলকার ভাই]: এখান থেকে pointer-events জ্যাম চিরতরে মুক্ত করে ওয়ান-ক্লিক লাইভ সিঙ্ক ফিক্স করা হলো ভাই */
 .btn-disabled { opacity: 0.4; box-shadow: none !important; transform: none !important; }
