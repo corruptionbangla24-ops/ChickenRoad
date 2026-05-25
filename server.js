@@ -34,8 +34,7 @@ const MAIN_SITE_URL = "https://betlover247.onrender.com";
 
 // 📥 একটিভ বাজি ট্র্যাকিং লোকাল মেমোরি বক্স (ম্যানুয়াল ক্যাশআউটের হিসেব একুরেট ভেরিফাই করার জন্য মাস্টার অবজেক্ট)
 let activeChickenBets = {};
-
-// 💰 লাইভ অ্যাকাউন্ট ব্যালেন্স নিয়ে আসার ডেডিকেটেড এপিআই গেটওয়ে (পিএইচপি গেট ব্যালেন্স সিঙ্ক)
+// 💰 ১. লাইভ অ্যাকাউন্ট ব্যালেন্স নিয়ে আসার ডেডিকেটেড এপিআই গেটওয়ে (GET Route)
 app.get('/api/chicken-balance', async (req, res) => {
     const { userId, wallet } = req.query;
     try {
@@ -49,7 +48,7 @@ app.get('/api/chicken-balance', async (req, res) => {
     }
 });
 
-// 🛫 ১. ব্যালেন্স কাটার মেগা এপিআই রাউট (হুবহু ওরিজিনাল এভিয়েটর ২.০ এর কড়া ডোমেন হ্যান্ডশেক ও রেসপন্স সিঙ্ক ভাই)
+// 🛫 ২. ব্যালেন্স কাটার মেগা এপিআই রাউট (POST Route - হুবহু এভিয়েটরের সফল ওরিজিনাল অবজেক্ট স্ট্রাকচার সিঙ্ক ভাই)
 app.post('/api/chicken-bet', async (req, res) => {
     const { userId, amount, wallet } = req.body;
     try {
@@ -61,23 +60,27 @@ app.post('/api/chicken-bet', async (req, res) => {
             wallet: wallet
         }, { timeout: 15000 });
 
-        // কড়া ডাটাবেজ রেসপন্স চেক লক
         if (response.data && response.data.status === "ok") {
             activeChickenBets[userId] = { amount: parseFloat(amount), wallet: wallet };
             
-            // 🎯 [এভিয়েটর স্ক্রিনশটের হুবহু ১৪৮ নম্বর লাইনের বিশুদ্ধ রেসপন্স প্রোটোকল লক ভাই]
-            res.json({ 
+            // 🎯 সকেটের মেইন পাইপলাইনেও ব্যালেন্স ব্রডকাস্ট ফায়ার করা হলো ভাই
+            io.emit("balanceUpdate", { username: userId, balance: response.data.balance });
+            
+            return res.json({ 
                 success: true, 
                 balance: response.data.balance, 
                 betAmt: parseFloat(amount) 
             });
         } else { 
-            res.json({ success: false, message: response.data.message || "❌ Declined!" }); 
+            return res.json({ success: false, message: response.data.message || "❌ Balance deduction failed!" }); 
         }
     } catch (e) { 
-        res.json({ success: false, message: "Timeout!" }); 
+        console.error("Chicken Bet Core Database Error:", e.message);
+        return res.json({ success: false, message: "⚠️ Connection Timeout! Try again." }); 
     }
 });
+
+
 
 
 // 🛫 ২. ম্যানুয়াল ক্যাশআউট উইনিং ব্যালেন্স এপিআই রাউট (হুবহু এভিয়েটরের স্ক্রিনশটের মেগা উইন ও লগ প্যারামিটার সিঙ্ক ভাই)
