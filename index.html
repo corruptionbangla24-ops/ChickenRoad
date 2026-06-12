@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CHICKEN ROAD - MULTI-RISK LADDER SYSTEM</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- 🏟️ মেইন রয়েল চিকেন রোড ক্যানভাস এরিনা -->
+    <div class="game-stadium-canvas">
+        
+        <!-- 👑 ওপরের অফিশিয়াল স্ট্যাটাস ডিসপ্লে বার (উইঙ্গো ও ডাইস ৩ডি অবিকল ক্লোন) -->
+        <div class="top-status-header">
+            <div class="game-title">CHICKEN <span class="title-accent">ROAD</span> <span class="help-icon">?</span></div>
+            <div class="live-win-counter" id="live-win-multiplier">0.00 ৳ <span class="menu-burger">≡</span></div>
+        </div>
+
+        <!-- 🛣️ ডাইনামিক মেগা আনলিমিটেড হরিজন্টাল স্ক্রোল হাইওয়ে এরিনা -->
+        <div class="highway-arena" id="highway-map">
+            
+            <!-- 🐓 [১. প্রারম্ভিক নিরাপদ জোন]: অন্য গেমের অবিকল ফার্স্ট কলাম কাঠামো -->
+            <div class="starting-safe-sidewalk">
+                <div class="safe-zone-lbl">START</div>
+                <!-- 🐓 [🔒 গিটহাব অরিজিনাল chicken.png ব্রিডিং মোশন ইঞ্জিন লক 🔒] -->
+                <div class="animated-chicken-vector" id="chicken-hero">
+                    <img src="chicken.png" class="chicken-png-node" id="chicken-img-core" alt="🐔" onerror="this.src='./chicken.png';">
+                    <div id="chicken-shadow"></div>
+                </div>
+            </div>
+
+            <!-- 🚧 ডাইনামিক লেনের কন্টেইনার (৪-স্তর ওOdds চার্ট অনুযায়ী ওটো-লোড হবে ওস্তাদ!) -->
+            <div id="dynamic-lanes-wrapper" style="display: flex; height: 100%;"></div>
+
+            <!-- 🏁 ডানের চূড়ান্ত উইনিং ফুটপাত জোন -->
+            <div class="ending-win-sidewalk">
+                <div class="win-zone-lbl">GOAL</div>
+            </div>
+
+        </div>
+
+        <!-- 🎛️ নিচের মেইন বেটিং ড্যাশবোর্ড কন্ট্রোল প্যানেল (১০০% অন্য গেমের লেআউট কাঠামো ক্লোন) -->
+        <div class="bottom-bet-dashboard">
+            <div class="bet-id-row">Bet ID: <span class="arrow-down">▼</span></div>
+
+            <!-- স্টেক নব ইনপুট প্যানেল -->
+            <div class="stake-input-container">
+                <button class="adjust-btn" onclick="adjustStake('minus')">—</button>
+                <div class="stake-value-box"><span id="stake-display">5000.00</span> <span class="currency-sign">৳</span></div>
+                <button class="adjust-btn" onclick="adjustStake('plus')">+</button>
+                <button class="multiplier-btn" onclick="multiplyStake(0.5)">x0.5</button>
+                <button class="multiplier-btn" onclick="multiplyStake(2.0)">x2.0</button>
+                <div class="coin-stack-icon">🪙</div>
+            </div>
+
+            <!-- রিস্ক লেভেল ফিল্টার সিলেক্টর -->
+            <div class="risk-dropdown-holder">
+                <select id="risk-level-select" onchange="handleRiskLevelChange()">
+                    <option value="Easy">Easy (30 Lanes)</option>
+                    <option value="Medium">Medium (25 Lanes)</option>
+                    <option value="Hard" selected>Hard (20 Lanes)</option>
+                    <option value="Hardcore">Hardcore (15 Lanes)</option>
+                </select>
+            </div>
+
+            <!-- পাশাপাশি ডাবল বাটন গ্রিড প্যানেল -->
+            <div class="double-action-button-grid">
+                <button class="jili-cashout-btn" id="cashout-action-btn" onclick="executeChickenCashOutSequence()" disabled>Cashout</button>
+                <button class="jili-play-btn" id="play-action-btn" onclick="executeChickenStepJumpSequence()">Play</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 📢 ক্যাসিনো রিয়েল-টাইমে অডিও ও সকেট নেটওয়ার্ক ড্রাইভার -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlUserId = urlParams.get('userId') || urlParams.get('id') || urlParams.get('username') || "guest_user";
+        const urlWallet = urlParams.get('wallet') || "main";
+        const SERVER_URL = window.location.origin;
+
+        // 🎰 [উইঙ্গো কালার ট্রেড অবিকল ব্যালেন্স ভ্যারিয়েবল লকিং মেকার]
+        let balance = 5000.00; 
+        let currentStake = 5000.00; 
+        let gameStateStatus = "IDLE"; 
+        let currentLanePosition = -1;
+        let vehicleSpawnIntervalsList = [];
+
+        // 🎯 [🔒 ওস্তাদ! আপনার ডিমান্ড অনুযায়ী ৩০, ২৫, ২০, ১৫ লেনের ৪-স্তর ওOdds ম্যাপ কড়া লক 🔒]
+        const chickenRoadMultiRiskLadders = {
+            "Easy": [1.02, 1.05, 1.08, 1.12, 1.16, 1.20, 1.25, 1.30, 1.35, 1.41, 1.47, 1.54, 1.61, 1.69, 1.77, 1.86, 1.96, 2.07, 2.19, 2.32, 2.46, 2.62, 2.80, 3.00, 3.23, 3.49, 3.80, 4.15, 4.56, 5.00], // ৩০ লেন
+            "Medium": [1.05, 1.11, 1.18, 1.26, 1.35, 1.45, 1.56, 1.68, 1.82, 1.98, 2.16, 2.37, 2.61, 2.89, 3.22, 3.61, 4.08, 4.64, 5.32, 6.16, 7.20, 8.52, 10.22, 12.50, 15.50], // ২৫ লেন
+            "Hard": [1.12, 1.26, 1.42, 1.62, 1.85, 2.13, 2.47, 2.89, 3.41, 4.05, 4.86, 5.90, 7.26, 9.07, 11.52, 14.92, 19.82, 27.02, 38.28, 56.50], // ২০ লেন
+            "Hardcore": [1.25, 1.56, 1.98, 2.56, 3.38, 4.56, 6.30, 8.92, 13.08, 19.85, 31.42, 52.34, 91.60, 172.50, 350.00] // ১৫ লেন
+        };
+
+        // 🚗 [🔒 গিটহাব অরিজিনাল কার ইমেজ অ্যারে লক 🔒]: আপনার আপলোডেড car1.png, car2.png, car3.png সরাসরি সিঙ্ক!
+        const pngVehiclesLibrary = ["car1.png", "car2.png", "car3.png", "./car1.png", "./car2.png", "./car3.png"];
+
+        function generateDynamicRiskLanesUI() {
+            let selectedRisk = document.getElementById("risk-level-select").value;
+            let activeLadder = chickenRoadMultiRiskLadders[selectedRisk];
+            let wrapper = document.getElementById("dynamic-lanes-wrapper");
+            
+            wrapper.innerHTML = ""; 
+            activeLadder.forEach((odds, index) => {
+                let laneNode = document.createElement("div");
+                laneNode.className = "road-lane";
+                laneNode.setAttribute("data-lane", index);
+                laneNode.innerHTML = `<div class="lane-manhole-node" id="odds-${index}">${odds}</div>`;
+                wrapper.appendChild(laneNode);
+            });
+            startHighVelocityTrafficSpawnerEngine(); 
+        }
+
+        function handleRiskLevelChange() {
+            playAudio('click');
+            generateDynamicRiskLanesUI();
+        }
+
+        setTimeout(() => { generateDynamicRiskLanesUI(); }, 100);
+
+        // 🔌 [উইঙ্গো কালার ট্রেড ওরিজিনাল রিয়েল-টাইম সকেট ব্যালেন্স সিঙ্ক গেটওয়ে]
+        const socket = io(SERVER_URL);
+        socket.on('balanceUpdate', (data) => {
+            if (data && data.username === urlUserId) {
+                let updatedBal = parseFloat(data.balance);
+                if (!isNaN(updatedBal)) {
+                    balance = updatedBal;
+                    document.getElementById("live-win-multiplier").innerHTML = `${balance.toFixed(2)} ৳ <span class="menu-burger">≡</span>`;
+                    
+                    if (window.parent && window.parent.postMessage) {
+                        window.parent.postMessage({ action: "refreshBalance", balance: balance }, "*");
+                    }
+                }
+            }
+        });
+
+        // 🚨 [🔒 অন্য গেমের অবিকল ব্যালেন্স পাথ সিঙ্ক লক 🔒]: /api/chicken-balance রাউটে কড়া কানেকশন!
+        async function fetchLivePlatformBalanceSync() {
+            try {
+                const res = await fetch(`${SERVER_URL}/api/chicken-balance?userId=${urlUserId}&wallet=${urlWallet}`);
+                const data = await res.json();
+                if (data && data.success) {
+                    let fetchedBal = parseFloat(data.balance);
+                    if (!isNaN(fetchedBal)) {
+                        balance = fetchedBal;
+                        document.getElementById("live-win-multiplier").innerHTML = `${balance.toFixed(2)} ৳ <span class="menu-burger">≡</span>`;
+                    }
+                }
+            } catch (e) {
+                document.getElementById("live-win-multiplier").innerHTML = `${balance.toFixed(2)} ৳ <span class="menu-burger">≡</span>`;
+            }
+        }
+        fetchLivePlatformBalanceSync();
+
+        function adjustStake(action) {
+            if (gameStateStatus === "PLAYING") return;
+            if (action === 'minus' && currentStake > 10) currentStake -= 10;
+            if (action === 'plus' && currentStake < 20000) currentStake += 10;
+            document.getElementById("stake-display").innerText = currentStake.toFixed(2);
+            playAudio('click');
+        }
+
+        function multiplyStake(factor) {
+            if (gameStateStatus === "PLAYING") return;
+            currentStake = currentStake * factor;
+            if (currentStake < 1) currentStake = 1.00;
+            if (currentStake > 20000) currentStake = 20000.00;
+            document.getElementById("stake-display").innerText = currentStake.toFixed(2);
+            playAudio('click');
+        }
+
+        // 🚗 [🔒 অন্য গেমের অবিকল রাজকীয় বড় সাইজের পিএনজি কার স্পোনার ড্রাইভার লক 🔒]
+        function startHighVelocityTrafficSpawnerEngine() {
+            clearActiveTrafficEngine();
+            let lanes = document.querySelectorAll(".road-lane");
+            
+                        const premiumFallbackCarsList = [
+                `<div style="width:36px; height:70px; background:linear-gradient(180deg, #e53935 0%, #b71c1c 100%); border-radius:10px; box-shadow:0 6px 12px rgba(0,0,0,0.6); position:relative; transform:rotate(180deg);">
+                    <div style="width:26px; height:22px; background:#2196f3; border-radius:5px; position:absolute; top:12px; left:5px;"></div>
+                    <div style="width:26px; height:12px; background:#2196f3; border-radius:3px; position:absolute; top:48px; left:5px;"></div>
+                </div>`,
+                `<div style="width:36px; height:70px; background:linear-gradient(180deg, #1e88e5 0%, #0d47a1 100%); border-radius:10px; box-shadow:0 6px 12px rgba(0,0,0,0.6); position:relative; transform:rotate(180deg);">
+                    <div style="width:26px; height:22px; background:#2196f3; border-radius:5px; position:absolute; top:12px; left:5px;"></div>
+                    <div style="width:26px; height:12px; background:#2196f3; border-radius:3px; position:absolute; top:48px; left:5px;"></div>
+                </div>`
+            ];
+            
+            lanes.forEach((lane, index) => {
+                let spawnSpeed = Math.random() * (1000 - 500) + 500; 
+                
+                let intervalIdx = setInterval(() => {
+                    if (gameStateStatus === "GAMEOVER") return;
+                    
+                    let vehicleNode = document.createElement("div");
+                    vehicleNode.className = "dynamic-vehicle-vessel";
+                    
+                    let chosenCarImage = pngVehiclesLibrary[Math.floor(Math.random() * pngVehiclesLibrary.length)];
+                    
+                    vehicleNode.innerHTML = `<img src="${chosenCarImage}" class="car-png-node" alt="🚘" onerror="this.style.display='none'; this.parentElement.innerHTML=\`${premiumFallbackCarsList[Math.floor(Math.random() * premiumFallbackCarsList.length)]}\`;">`;
+                    
+                    vehicleNode.style.top = "-120px";
+                    
+                    let driveDuration = Math.random() * (2.0 - 0.9) + 0.9; 
+                    vehicleNode.style.animation = `driveDownAnim ${driveDuration}s linear forwards`;
+                    
+                    lane.appendChild(vehicleNode);
+                    setTimeout(() => { vehicleNode.remove(); }, 2300); 
+                }, spawnSpeed + (index * 140)); 
+                
+                vehicleSpawnIntervalsList.push(intervalIdx);
+            });
+        }
+
+        function clearActiveTrafficEngine() {
+            vehicleSpawnIntervalsList.forEach(clearInterval);
+            vehicleSpawnIntervalsList = [];
+            document.querySelectorAll(".dynamic-vehicle-vessel").forEach(v => v.remove());
+        }
+
+        function resetAllManholeGlows() {
+            document.querySelectorAll(".lane-manhole-node").forEach(m => m.className = "lane-manhole-node");
+        }
+
+        // 🎮 [🐓 গ্র্যান্ড চিকেন ROAD কোর গেমপ্লে MASTER কন্ট্রোলার 🐓]
+        async function executeChickenStepJumpSequence() {
+            let playBtn = document.getElementById("play-action-btn");
+            let cashBtn = document.getElementById("cashout-action-btn");
+
+            playBtn.removeAttribute("disabled");
+
+            if (gameStateStatus === "IDLE" || gameStateStatus === "GAMEOVER") {
+                gameStateStatus = "IDLE"; 
+                let selectedRisk = document.getElementById("risk-level-select").value;
+                playBtn.disabled = true;
+                playAudio('bet');
+                try {
+                    const res = await fetch(`${SERVER_URL}/api/chicken-bet`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId: urlUserId, amount: parseFloat(currentStake), wallet: urlWallet, riskLevel: selectedRisk })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        gameStateStatus = "PLAYING"; 
+                        currentLanePosition = -1;
+                        
+                        let chickenImg = document.getElementById("chicken-img-core");
+                        chickenImg.src = "chicken.png"; 
+                        chickenImg.style.display = 'block';
+                        
+                        let chicken = document.getElementById("chicken-hero");
+                        chicken.style.left = "10px"; 
+                        chicken.style.top = "42%";
+                        chicken.className = "animated-chicken-vector";
+                        
+                        document.getElementById("risk-level-select").disabled = true;
+                        resetAllManholeGlows();
+
+                        playBtn.innerText = "JUMP"; 
+                        playBtn.className = "jili-play-btn jump-mode-blue";
+                        cashBtn.disabled = true;
+                        cashBtn.innerText = "Cashout";
+
+                        document.getElementById("highway-map").scrollLeft = 0;
+                        fetchLivePlatformBalanceSync();
+                    } else { alert(data.message || "❌ ব্যালেন্স অপ্রতুল ওস্তাদ!"); }
+                } catch (e) {}
+                playBtn.disabled = false;
+                return;
+            }
+
+            if (gameStateStatus === "PLAYING") {
+                playBtn.disabled = true;
+                playAudio('jump'); 
+                
+                let selectedRisk = document.getElementById("risk-level-select").value;
+                let crashProbability = 0.18; 
+                if (selectedRisk === "Easy") crashProbability = 0.08;
+                if (selectedRisk === "Medium") crashProbability = 0.13;
+                if (selectedRisk === "Hardcore") crashProbability = 0.28;
+
+                if (Math.random() < crashProbability) {
+                    gameStateStatus = "GAMEOVER"; 
+                    playAudio('crash'); 
+                    
+                    let chickenImg = document.getElementById("chicken-img-core");
+                    chickenImg.src = "chicken.png"; 
+                    document.getElementById("chicken-hero").className = "animated-chicken-vector chicken-splat-dead";
+                    
+                    fetch(`${SERVER_URL}/api/chicken-loss`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId: urlUserId, wallet: urlWallet })
+                    }).catch(e => {});
+
+                    setTimeout(() => { resetChickenRoadStadiumToIdle(); }, 1200); 
+                    return;
+                }
+
+                currentLanePosition++;
+                let activeLadder = chickenRoadMultiRiskLadders[selectedRisk];
+                let currentMultiplier = activeLadder[currentLanePosition];
+
+                let chicken = document.getElementById("chicken-hero");
+                let targetLeftPixels = 100 + (currentLanePosition * 82); 
+                chicken.style.left = `${targetLeftPixels}px`;
+                
+                resetAllManholeGlows();
+                let activeManhole = document.getElementById(`odds-${currentLanePosition}`);
+                if (activeManhole) activeManhole.className = "lane-manhole-node active-glow";
+
+                playAudio('safe'); 
+
+                let mapContainer = document.getElementById("highway-map");
+                if (targetLeftPixels > (mapContainer.clientWidth / 2)) {
+                    mapContainer.scrollTo({
+                        left: targetLeftPixels - (mapContainer.clientWidth / 2),
+                        behavior: 'smooth'
+                    });
+                }
+
+                if (currentLanePosition >= activeLadder.length - 1) {
+                    gameStateStatus = "GAMEOVER"; 
+                    playAudio('win'); 
+                    let winCash = currentStake * currentMultiplier;
+                    
+                    fetch(`${SERVER_URL}/api/chicken-win`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId: urlUserId, amount: winCash, bet_amount: currentStake, wallet: urlWallet, multiplier: currentMultiplier })
+                    }).catch(e => {});
+
+                    setTimeout(() => { resetChickenRoadStadiumToIdle(); }, 1500);
+                    return;
+                }
+
+                cashBtn.disabled = false;
+                cashBtn.innerText = `Cashout (${currentMultiplier}x)`;
+                cashBtn.className = "jili-cashout-btn cashout-mode-gold";
+                playBtn.innerText = "JUMP";
+                playBtn.disabled = false;
+            }
+        }
+
+                async function executeChickenCashOutSequence() {
+            let cashBtn = document.getElementById("cashout-action-btn");
+            cashBtn.disabled = true;
+            playAudio('win');
+            
+            let selectedRisk = document.getElementById("risk-level-select").value;
+            let activeLadder = chickenRoadMultiRiskLadders[selectedRisk];
+            let currentMultiplier = activeLadder[currentLanePosition];
+            let winCash = currentStake * currentMultiplier;
+
+            try {
+                // 🎯 [🔒 ওস্তাদ! অন্য গেমের ওরিজিনাল উইন এপিআই অবজেক্ট হিট লক 🔒]
+                const res = await fetch(`${SERVER_URL}/api/chicken-win`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: urlUserId, amount: winCash, bet_amount: currentStake, wallet: urlWallet, multiplier: currentMultiplier })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    gameStateStatus = "GAMEOVER"; 
+                    resetChickenRoadStadiumToIdle();
+                }
+            } catch (e) {
+                cashBtn.disabled = false;
+            }
+        }
+
+        function resetChickenRoadStadiumToIdle() {
+            let playBtn = document.getElementById("play-action-btn");
+            let cashBtn = document.getElementById("cashout-action-btn");
+            
+            gameStateStatus = "IDLE"; 
+            playBtn.innerText = "Play"; 
+            playBtn.className = "jili-play-btn";
+            playBtn.disabled = false;
+            
+            cashBtn.disabled = true;
+            cashBtn.innerText = "Cashout";
+            cashBtn.className = "jili-cashout-btn";
+
+            document.getElementById("risk-level-select").disabled = false;
+            resetAllManholeGlows();
+            
+            let chickenImg = document.getElementById("chicken-img-core");
+            chickenImg.src = "chicken.png";
+            
+            let chicken = document.getElementById("chicken-hero");
+            chicken.style.left = "10px"; 
+            chicken.style.top = "42%";
+            chicken.className = "animated-chicken-vector";
+            
+            document.getElementById("highway-map").scrollLeft = 0; 
+            fetchLivePlatformBalanceSync();
+            generateDynamicRiskLanesUI(); 
+        }
+
+        // 🔊 [🔒 গিটহাব অরিじんাল সাউন্ড ফাইলনেম ম্যাপিং কড়া লক 🔒]
+        const slotSounds = {
+            click: new Audio('click.mp3'),
+            bet: new Audio('click.mp3'),
+            jump: new Audio('jump.mp3'),
+            crash: new Audio('crash.mp3'),
+            safe: new Audio('safe.mp3'),
+            win: new Audio('win.mp3')
+        };
+        Object.values(slotSounds).forEach(s => { s.load(); });
+
+        function playAudio(type) {
+            try { if (slotSounds[type]) { slotSounds[type].currentTime = 0; slotSounds[type].play().catch(e => {}); } } catch(e) {}
+        }
+    </script>
+</body>
+</html>
