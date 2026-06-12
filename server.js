@@ -158,7 +158,7 @@ io.on('connection', (socket) => {
 });
 
 // 🌐 [🔒 ওস্তাদ! পোর্ট ৯৯৯৯ কড়া কিংস বর্ম লক ফায়ার 🔒]
-const PORT = process.env.PORT || 9999;
+const PORT = process.env.PORT || 10000;
 server.listen(PORT, () => {
     console.log(`🐓 Chicken Road Pure Manual Engine Running on port 9999`);
 });
